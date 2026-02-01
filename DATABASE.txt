@@ -1,0 +1,51 @@
+CREATE TABLE Traintbl(
+    TrainId      NUMBER PRIMARY KEY,
+    TrainName    VARCHAR2(100),
+    TrainCap     NUMBER,
+    TrainStatus  VARCHAR2(20)
+);
+CREATE SEQUENCE TRAINID_SEQ START WITH 1 INCREMENT BY 1;
+CREATE TABLE Passengertbl(
+    Pid      NUMBER PRIMARY KEY,
+    PName    VARCHAR2(100),
+    PAdd     VARCHAR2(200),
+    PGender  VARCHAR2(10),
+    PNat     VARCHAR2(50),
+    Pphone   VARCHAR2(15)
+);
+CREATE SEQUENCE PASSENGER_SEQ START WITH 1 INCREMENT BY 1;
+CREATE TABLE Traveltbl (
+    TravCode   NUMBER PRIMARY KEY,
+    TravDate   DATE,
+    Train      NUMBER,
+    Src        VARCHAR2(100),
+    Dest       VARCHAR2(100),
+    Cost       NUMBER(10, 2),
+    CONSTRAINT fk_train FOREIGN KEY (Train) REFERENCES Traintbl(TrainId)
+);
+CREATE SEQUENCE TRAVEL_SEQ 
+START WITH 200 
+INCREMENT BY 1;
+CREATE TABLE Reservationtbl (
+    TicketId   NUMBER PRIMARY KEY,
+    Pid        NUMBER,
+    PName      VARCHAR2(100), 
+    TravCode   NUMBER,
+    TravDate   DATE,
+    TravSrc    VARCHAR2(100),
+    TravDest   VARCHAR2(100),
+    TravCost   NUMBER(10, 2),
+    CONSTRAINT fk_res_pid FOREIGN KEY (Pid) REFERENCES Passengertbl(Pid),
+    CONSTRAINT fk_res_trav FOREIGN KEY (TravCode) REFERENCES Traveltbl(TravCode)
+);
+CREATE SEQUENCE ticket_seq
+START WITH 1000 
+INCREMENT BY 1;
+CREATE TABLE Cancellationtbl (
+    CancId     NUMBER PRIMARY KEY,
+    TicketId   NUMBER,
+    CancDate   DATE
+);
+CREATE SEQUENCE cancellation_seq
+START WITH 3000 
+INCREMENT BY 1;

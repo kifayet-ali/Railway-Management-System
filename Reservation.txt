@@ -1,0 +1,38 @@
+private void button1_Click(object sender, EventArgs e)
+{
+    if (TravelCb.SelectedIndex == -1 || PidCb.SelectedIndex == -1 )
+    {
+        MessageBox.Show("Missing Information");
+    }
+    else
+    {
+        try
+        {
+            GetTravel();  
+            Con.Open();
+            DateTime travelDate;
+            if (!DateTime.TryParse(Date, out travelDate))
+            {
+                MessageBox.Show("Invalid travel date.");
+                return;
+            }
+            string query = "INSERT INTO Reservationtbl VALUES (ticket_seq.NEXTVAL, :Pid, :PName, :TravCode, :TravDate, :TravSrc, :TravDest, :TravCost)";
+            OracleCommand cmd = new OracleCommand(query, Con);
+            cmd.Parameters.Add(":Pid", OracleDbType.Int32).Value = Convert.ToInt32(PidCb.SelectedValue);  
+            cmd.Parameters.Add(":PName", OracleDbType.Varchar2).Value = pname; 
+            cmd.Parameters.Add(":TravCode", OracleDbType.Int32).Value = Convert.ToInt32(TravelCb.SelectedValue);  
+            cmd.Parameters.Add(":TravDate", OracleDbType.Date).Value = travelDate;  
+            cmd.Parameters.Add(":TravSrc", OracleDbType.Varchar2).Value = Src;  
+            cmd.Parameters.Add(":TravDest", OracleDbType.Varchar2).Value = Dest;  
+            cmd.Parameters.Add(new OracleParameter(":Cost", Convert.ToDecimal(Cost.ToString())));
+            cmd.ExecuteNonQuery();
+            MessageBox.Show("Reservation Accepted!");
+            Con.Close();
+            populate();
+        }
+        catch (Exception Ex)
+        {
+            MessageBox.Show("Error: " + Ex.Message);
+        }
+    }
+}
